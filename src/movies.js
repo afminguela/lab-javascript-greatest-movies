@@ -29,7 +29,7 @@ lo;
 // Iteration 3: All scores average - Get the average of all scores with 2 decimals
 function scoresAverage(moviesArray) {
   if (moviesArray.length === 0) return 0;
-  const total = moviesArray.reduce((sum, movie) => sum + (movie.score || 0), 0);
+  const total = moviesArray.reduce((sum, movie) => sum + (movie.score || 0), 0); // si el valor no existe pilla cero
   const media = total / moviesArray.length;
 
   return parseFloat(media.toFixed(2));
@@ -58,6 +58,12 @@ function orderByYear(moviesArray) {
   });
   return arraycopy;
 }
+// super factorizada con ternarios
+function orderByYear(moviesArray) {
+  return [...moviesArray].sort((a, b) =>
+    a.year !== b.year ? a.year - b.year : a.title.localeCompare(b.title)
+  );
+}
 
 console.log(orderByYear(movies));
 
@@ -72,9 +78,16 @@ function orderAlphabetically(moviesArray) {
   return arrayTitulos.splice(0, 20);
 }
 
+// return moviesArray
+// .map((e)=>(e.title))
+// .sort((a,b) => a.localeCompare(b))
+// .slice(0,20)
+
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
+
+
 function turnHoursToMinutes(moviesArray) {
- const arraycopy = [...moviesArray]
+  const arraycopy = [...moviesArray];
   return arraycopy.map((elemento) => {
     let duration = elemento.duration;
     let hours = 0;
@@ -89,7 +102,6 @@ function turnHoursToMinutes(moviesArray) {
     }
 
     return {
-     
       duration: hours * 60 + minutes,
     };
   });
@@ -97,28 +109,27 @@ function turnHoursToMinutes(moviesArray) {
 
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average
 function bestYearAvg(moviesArray) {
- 
-  if(moviesArray.length === 0 ) return null;
+  if (moviesArray.length === 0) return null;
   const pelisAnual = {}; // paso 1 mete las pelis en un objeto por años
-   moviesArray.forEach(peli =>  { // recorre el array mertiendo con push cada peli en su año correspindiente
-    if (!pelisAnual[peli.year]){ //si no hay año lo crea
-      pelisAnual[peli.year] =[];
+  moviesArray.forEach((peli) => {
+    // recorre el array mertiendo con push cada peli en su año correspindiente
+    if (!pelisAnual[peli.year]) {
+      //si no hay año lo crea
+      pelisAnual[peli.year] = [];
     }
-    pelisAnual[peli.year].push(peli) //pushea la peli
+    pelisAnual[peli.year].push(peli); //pushea la peli
+  });
+  // paso 2: calcula la media año. para cada año en el objeto calcula la media.
+  let mejorMedia = null;
+  let mejorAño = 0;
 
-   });
- // paso 2: calcula la media año. para cada año en el objeto calcula la media. 
- let mejorMedia=null;
- let mejorAño=0;
- 
- for(const year in pelisAnual){
-  const media= scoresAverage(pelisAnual[year]);
+  for (const year in pelisAnual) {
+    const media = scoresAverage(pelisAnual[year]);
 
-  if ((media>mejorMedia) || ((media === mejorMedia) && (year < mejorAño))){
-    mejorAño =year;
-    mejorMedia = media;
+    if (media > mejorMedia || (media === mejorMedia && year < mejorAño)) {
+      mejorAño = year;
+      mejorMedia = media;
+    }
   }
- }
- return `The best year was ${mejorAño} with an average score of ${mejorMedia}`;
-
+  return `The best year was ${mejorAño} with an average score of ${mejorMedia}`;
 }
